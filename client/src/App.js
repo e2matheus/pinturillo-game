@@ -15,6 +15,7 @@ function App() {
     currentWord: ''
   });
 
+  const [inputRoomCode, setInputRoomCode] = useState('');
   const [error, setError] = useState('');
 
   const createRoom = () => {
@@ -22,29 +23,48 @@ function App() {
       setError('Please enter your name');
       return;
     }
+    console.log('Attempting to create room for:', gameState.playerName);
     socket.emit('createRoom', gameState.playerName);
     setError('');
   };
 
   const joinRoom = () => {
-    if (!gameState.playerName.trim() || !gameState.roomCode) {
+    if (!gameState.playerName.trim() || !inputRoomCode) {
       setError('Please enter your name and room code');
       return;
     }
     socket.emit('joinRoom', {
-      roomCode: gameState.roomCode,
+      roomCode: inputRoomCode,
       playerName: gameState.playerName
     });
     setError('');
   };
 
   useEffect(() => {
+    socket.on('connect', () => {
+      console.log('Connected to server');
+    });
+
     socket.on('roomCreated', (roomCode) => {
-      setGameState(prev => ({...prev, roomCode}));
+      console.log('Room created:', roomCode);
+      setGameState(prev => ({
+        ...prev,
+        roomCode,
+        players: []
+      }));
     });
 
     socket.on('playerJoined', (players) => {
-      setGameState(prev => ({...prev, players}));
+      console.log('Players updated:', players);
+      setGameState(prev => ({
+        ...prev,
+        players,
+        roomCode: prev.roomCode || inputRoomCode
+      }));
+    });
+
+    socket.on('joinError', (message) => {
+      setError(message);
     });
 
     socket.on('correctGuess', ({player, scores}) => {
@@ -52,11 +72,13 @@ function App() {
     });
 
     return () => {
+      socket.off('connect');
       socket.off('roomCreated');
       socket.off('playerJoined');
       socket.off('correctGuess');
+      socket.off('joinError');
     };
-  }, []);
+  }, [inputRoomCode]);
 
   return (
     <div className="app">
@@ -75,7 +97,8 @@ function App() {
           <div className="form-group">
             <input
               placeholder="Room Code"
-              onChange={(e) => setGameState(prev => ({...prev, roomCode: e.target.value}))}
+              value={inputRoomCode}
+              onChange={(e) => setInputRoomCode(e.target.value)}
             />
             <button onClick={joinRoom}>Join Room</button>
           </div>
