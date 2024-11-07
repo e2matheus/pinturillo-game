@@ -1,0 +1,11 @@
+
+Pinturillo
+
+ABOUT
+This is a _multiplayer drawing and word guessing game_. The players make drawings and the others must guess the secret word based on the drawings.
+
+OBJECTIVE
+El objetivo es _adivinar las palabras representadas a través de dibujos_ para así acumular puntos.
+
+HOW TO PLAY
+In the game, **you draw a picture based on the word that is given to you, or you guess what the other player is drawing**. Draw your best picture to give others a chance to guess correctly!

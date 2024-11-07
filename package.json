@@ -1,0 +1,17 @@
+{
+  "name": "pinturillo-game",
+  "version": "1.0.0",
+  "description": "A multiplayer drawing and word guessing game",
+  "scripts": {
+    "install:all": "npm install && cd client && npm install && cd ../server && npm install",
+    "start:client": "cd client && npm start",
+    "start:server": "cd server && npm run dev",
+    "dev": "concurrently \"npm run start:server\" \"npm run start:client\""
+  },
+  "keywords": ["game", "drawing", "multiplayer"],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.0.1"
+  }
+}

@@ -1,0 +1,12 @@
+
+minimum Viable Product
+
+Wikipedia definition:
+A minimum viable product (MVP) is a version of a product with just enough features to be usable by early customers who can then provide feedback for future product development.
+
+ProductPlan definition:
+A minimum viable product, or MVP, is a product with enough features to attract early-adopter customers and validate a product idea early in the product development cycle. In industries such as software, the MVP can help the product team receive user feedback as quickly as possible to iterate and improve the product.
+
+Atlassian definition:
+Put in basic terms: the minimum viable product, or MVP, is the simplest version of a product that you need to build to sell it to a market. The concept of the minimum viable product, or MVP, was first introduced by Lean Startup genius Eric Ries. He defines the MVP as:
+“The version of a new product which allows a team to collect the maximum amount of validated learning about customers with the least effort.”
