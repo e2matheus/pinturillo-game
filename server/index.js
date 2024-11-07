@@ -20,7 +20,29 @@ const io = socketIo(server, {
 
 // Store active rooms
 const rooms = new Map();
-const words = ['dog', 'cat', 'house', 'tree', 'sun']; // Basic word list for MVP
+const words = ['dog', 'cat', 'house', 'tree', 'sun', 'car', 'book', 'phone', 'computer', 'pizza'];
+
+function startNewRound(roomCode) {
+  const room = rooms.get(roomCode);
+  if (!room) return;
+
+  // Select random word and drawer
+  const randomWord = words[Math.floor(Math.random() * words.length)];
+  const randomDrawerIndex = Math.floor(Math.random() * room.players.length);
+  const drawer = room.players[randomDrawerIndex];
+  
+  room.currentDrawer = drawer.id;
+  room.word = randomWord;
+  room.status = 'playing';
+
+  // Send different messages to drawer and guessers
+  room.players.forEach(player => {
+    io.to(player.id).emit('roundStart', {
+      drawer: drawer.name,
+      word: player.id === drawer.id ? randomWord : '_ '.repeat(randomWord.length)
+    });
+  });
+}
 
 io.on('connection', (socket) => {
   console.log('New client connected:', socket.id);
@@ -57,6 +79,9 @@ io.on('connection', (socket) => {
       console.log('Players in room:', room.players);
       // Emit to everyone in the room, including the joiner
       io.to(roomCode).emit('playerJoined', room.players);
+      if (room.players.length >= 2 && room.status === 'waiting') {
+        startNewRound(roomCode);
+      }
     } else {
       socket.emit('joinError', 'Room not found');
     }

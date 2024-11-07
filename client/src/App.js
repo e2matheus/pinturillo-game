@@ -12,7 +12,10 @@ function App() {
     playerName: '',
     isDrawing: false,
     players: [],
-    currentWord: ''
+    currentWord: '',
+    currentDrawer: '',
+    isMyTurn: false,
+    isLoading: false
   });
 
   const [inputRoomCode, setInputRoomCode] = useState('');
@@ -59,7 +62,8 @@ function App() {
       setGameState(prev => ({
         ...prev,
         players,
-        roomCode: prev.roomCode || inputRoomCode
+        roomCode: prev.roomCode || inputRoomCode,
+        isLoading: true
       }));
     });
 
@@ -71,12 +75,23 @@ function App() {
       setGameState(prev => ({...prev, players: scores}));
     });
 
+    socket.on('roundStart', ({drawer, word}) => {
+      setGameState(prev => ({
+        ...prev,
+        currentWord: word,
+        currentDrawer: drawer,
+        isMyTurn: drawer === prev.playerName,
+        isLoading: false
+      }));
+    });
+
     return () => {
       socket.off('connect');
       socket.off('roomCreated');
       socket.off('playerJoined');
       socket.off('correctGuess');
       socket.off('joinError');
+      socket.off('roundStart');
     };
   }, [inputRoomCode]);
 
@@ -107,10 +122,21 @@ function App() {
         <div className="game">
           <div className="game-header">
             <h2>Room Code: {gameState.roomCode}</h2>
-            {gameState.currentWord && <h3>Word: {gameState.currentWord}</h3>}
+            {gameState.currentWord && (
+              <div className="word-display">
+                <h3>Word: {gameState.currentWord}</h3>
+                {gameState.isMyTurn && <div className="drawer-alert">You are the drawer!</div>}
+              </div>
+            )}
           </div>
           <div className="game-content">
-            <DrawingCanvas socket={socket} roomCode={gameState.roomCode} />
+            <DrawingCanvas 
+              socket={socket} 
+              roomCode={gameState.roomCode} 
+              isMyTurn={gameState.isMyTurn}
+              currentDrawer={gameState.currentDrawer}
+              isLoading={gameState.isLoading}
+            />
             <PlayerList players={gameState.players} />
           </div>
         </div>

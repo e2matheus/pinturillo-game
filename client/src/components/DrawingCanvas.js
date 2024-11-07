@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 
-function DrawingCanvas({ socket, roomCode }) {
+function DrawingCanvas({ socket, roomCode, isMyTurn, currentDrawer, isLoading }) {
   const canvasRef = useRef(null);
   const isDrawing = useRef(false);
 
@@ -19,7 +19,7 @@ function DrawingCanvas({ socket, roomCode }) {
     };
 
     const draw = (e) => {
-      if (!isDrawing.current) return;
+      if (!isDrawing.current || !isMyTurn) return;
 
       const rect = canvas.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -54,15 +54,31 @@ function DrawingCanvas({ socket, roomCode }) {
       canvas.removeEventListener('mouseup', stopDrawing);
       canvas.removeEventListener('mouseout', stopDrawing);
     };
-  }, [socket, roomCode]);
+  }, [socket, roomCode, isMyTurn]);
 
   return (
-    <canvas
-      ref={canvasRef}
-      width={800}
-      height={600}
-      style={{ border: '1px solid black' }}
-    />
+    <div className="canvas-container">
+      <canvas
+        ref={canvasRef}
+        width={800}
+        height={600}
+        style={{ 
+          border: '1px solid black',
+          cursor: isMyTurn ? 'crosshair' : 'not-allowed'
+        }}
+      />
+      <div className="canvas-overlay">
+        {isLoading ? (
+          <div className="loading">Selecting drawer...</div>
+        ) : isMyTurn ? (
+          <div className="drawer-instructions">You are drawing: {currentDrawer}</div>
+        ) : (
+          <div className="waiting-message">
+            Waiting for {currentDrawer || 'player'} to draw...
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 

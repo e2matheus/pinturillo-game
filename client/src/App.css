@@ -58,4 +58,45 @@
 .player-list li {
   padding: 8px 0;
   border-bottom: 1px solid #ddd;
+}
+
+.word-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.drawer-alert {
+  color: #2ecc71;
+  font-weight: bold;
+  padding: 5px 10px;
+  background: #eafaf1;
+  border-radius: 4px;
+}
+
+.canvas-container {
+  position: relative;
+}
+
+.canvas-overlay {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border-radius: 4px;
+}
+
+.loading {
+  color: #f1c40f;
+}
+
+.drawer-instructions {
+  color: #2ecc71;
+}
+
+.waiting-message {
+  color: #e74c3c;
 } 
